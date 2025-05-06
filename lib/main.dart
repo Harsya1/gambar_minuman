@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'screen/dashboard.dart';
+import 'screen/routes/routes.dart'; // Perbarui path import
+// import 'screen/dashboard.dart';
 
 void main() {
-  runApp(const MyApp()); // Memanggil runApp untuk menjalankan aplikasi
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,12 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Coffee Menu', // Judul aplikasi
+      title: 'Coffee Menu',
       theme: ThemeData(
-        fontFamily: 'Sans-serif', // Tema aplikasi
+        fontFamily: 'Sans-serif',
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const DashboardMinum(), // Halaman utama aplikasi
+      initialRoute: '/', // Rute awal
+      onGenerateRoute: RouteGenerator.generateRoute, // Gunakan RouteGenerator
     );
   }
 }

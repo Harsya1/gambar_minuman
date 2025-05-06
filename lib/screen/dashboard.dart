@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'item_menu/item_mocha.dart'; // Import halaman MochaItem
+import 'item_menu/item_mocha.dart';
 import 'item_menu/item_americano.dart';
 import 'item_menu/item_cappuchino.dart';
 import 'item_menu/item_coffe_latte.dart';
@@ -27,10 +27,63 @@ class _DashboardMinumState extends State<DashboardMinum> {
     {'title': 'V60', 'image': 'lib/assets/img/v60.png'},
   ];
 
+  // Map untuk memetakan judul ke widget
+  final Map<String, Widget> coffeePages = {
+    'Mocha': const MochaItem(),
+    'Americano': const AmericanoItem(),
+    'Cappuchino': const CappuchinoItem(),
+    'Coffe Latte': const CoffeLatteItem(),
+    'Long Black': const LongBlackItem(),
+    'Cafe Au Lait': const CafeAuLaitItem(),
+    'Expresso': const ExpressoItem(),
+    'V60': const V60Item(),
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF), // Warna putih
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        backgroundColor: Colors.white,
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: Column(
+          children: [
+            Container(
+              color: Colors.black,
+              width: double.infinity,
+              height: 150,
+              alignment: Alignment.center,
+              child: const Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home, color: Colors.black),
+              title: const Text('Home', style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Navigator.pop(context); // Tutup drawer
+                Navigator.pushNamed(context, '/'); // Navigasi ke HomePage
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info, color: Colors.black),
+              title: const Text('About', style: TextStyle(color: Colors.black)),
+              onTap: () {
+                Navigator.pop(context); // Tutup drawer
+                Navigator.pushNamed(context, '/about'); // Navigasi ke AboutPage
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -82,70 +135,12 @@ class _DashboardMinumState extends State<DashboardMinum> {
                     final item = coffeeItems[index];
                     return GestureDetector(
                       onTap: () {
-                        if (item['title'] == 'Mocha') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MochaItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Americano') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AmericanoItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Cappuchino') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CappuchinoItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Coffe Latte') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CoffeLatteItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Long Black') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LongBlackItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Cafe Au Lait') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CafeAuLaitItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'Expresso') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ExpressoItem(),
-                            ),
-                          );
-                        }
-                        if (item['title'] == 'V60') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const V60Item(),
-                            ),
-                          );
-                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => coffeePages[item['title']]!,
+                          ),
+                        );
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
