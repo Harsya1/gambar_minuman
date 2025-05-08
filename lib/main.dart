@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screen/routes/routes.dart'; // Perbarui path import
+import 'screen/routes/routes.dart';
 // import 'screen/dashboard.dart';
 
 void main() {

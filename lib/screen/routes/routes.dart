@@ -6,7 +6,6 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Jika ingin mengirim argument
     // final args = settings.arguments;
-
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const DashboardMinum());
