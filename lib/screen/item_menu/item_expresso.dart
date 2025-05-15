@@ -8,11 +8,13 @@ class ExpressoItem extends StatefulWidget {
 }
 
 class _ExpressoItemState extends State<ExpressoItem> {
+  final List<bool> _isChecked = [false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expresso Recipe'),
+        title: const Text('Espresso Recipe'),
         automaticallyImplyLeading: false, // Hilangkan tombol back default
         actions: [
           Padding(
@@ -76,12 +78,29 @@ class _ExpressoItemState extends State<ExpressoItem> {
             const SizedBox(height: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 7-10 gram bubuk kopi halus (sesuai takaran portafilter)'),
+              children: [
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _isChecked[0],
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked[0] = value!;
+                        });
+                      },
+                      shape: const CircleBorder(),
+                      activeColor: const Color(0xFF87CEFA),
+                    ),
+                    const Expanded(child: Text('- 1 shot espresso (30 ml)')),
+                  ],
                 ),
-                ListTile(
+                const ListTile(
+                  leading: Icon(Icons.check),
+                  title: Text(
+                    '- 7-10 gram bubuk kopi halus (sesuai takaran portafilter)',
+                  ),
+                ),
+                const ListTile(
                   leading: Icon(Icons.check),
                   title: Text('- Air bersih secukupnya'),
                 ),

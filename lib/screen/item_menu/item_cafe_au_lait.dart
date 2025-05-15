@@ -8,6 +8,8 @@ class CafeAuLaitItem extends StatefulWidget {
 }
 
 class _CafeAuLaitItemState extends State<CafeAuLaitItem> {
+  final List<bool> _isChecked = [false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,23 +76,34 @@ class _CafeAuLaitItemState extends State<CafeAuLaitItem> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Kopi hitam (150-200 ml)'),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text(
-                    '- Susu segar (150-200 ml), dapat disesuaikan dengan selera',
-                  ),
+                const Expanded(child: Text('- 1 cup kopi hitam panas')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Gula sesuai selera (opsional)'),
-                ),
+                const Expanded(child: Text('- 1 cup susu panas')),
               ],
             ),
             const SizedBox(height: 16.0),

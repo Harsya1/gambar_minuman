@@ -27,7 +27,6 @@ class _DashboardMinumState extends State<DashboardMinum> {
     {'title': 'V60', 'image': 'lib/assets/img/v60.png'},
   ];
 
-  // Map untuk memetakan judul ke widget
   final Map<String, Widget> coffeePages = {
     'Mocha': const MochaItem(),
     'Americano': const AmericanoItem(),
@@ -39,10 +38,35 @@ class _DashboardMinumState extends State<DashboardMinum> {
     'V60': const V60Item(),
   };
 
+  final TextEditingController searchController = TextEditingController();
+  List<Map<String, String>> filteredItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filterItems(''); // Awalnya tampilkan semua item
+  }
+
+  void filterItems(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredItems = coffeeItems;
+      } else {
+        filteredItems =
+            coffeeItems
+                .where(
+                  (item) => item['title']!.toLowerCase().contains(
+                    query.toLowerCase(),
+                  ),
+                )
+                .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
         title: const Text('Dashboard'),
         backgroundColor: Colors.white,
@@ -69,112 +93,145 @@ class _DashboardMinumState extends State<DashboardMinum> {
               leading: const Icon(Icons.home, color: Colors.black),
               title: const Text('Home', style: TextStyle(color: Colors.black)),
               onTap: () {
-                Navigator.pop(context); // Tutup drawer
-                Navigator.pushNamed(context, '/'); // Navigasi ke HomePage
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/');
               },
             ),
             ListTile(
               leading: const Icon(Icons.info, color: Colors.black),
               title: const Text('About', style: TextStyle(color: Colors.black)),
               onTap: () {
-                Navigator.pop(context); // Tutup drawer
-                Navigator.pushNamed(context, '/about'); // Navigasi ke AboutPage
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/about');
               },
             ),
           ],
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Stack(
-                  children: [
-                    Image.asset(
-                      'lib/assets/img/background.png',
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                    Positioned(
-                      bottom: 16,
-                      left: 16,
-                      child: Text(
-                        'Kedai Lekku',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 6,
-                              color: Colors.black.withOpacity(0.7),
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFFFE4B5), // Warna cerah 1 (Moccasin)
+              Color(0xFFFFA07A), // Warna cerah 2 (Light Salmon)
+              Color(0xFF87CEFA), // Warna cerah 3 (Light Sky Blue)
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                // TextField untuk pencarian
+                TextField(
+                  controller: searchController,
+                  onChanged: filterItems,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Cari Resep minuman...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.black,
+                        width: 1,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GridView.builder(
-                  itemCount: coffeeItems.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 3 / 3.5,
+                    filled: true,
                   ),
-                  itemBuilder: (context, index) {
-                    final item = coffeeItems[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => coffeePages[item['title']]!,
-                          ),
-                        );
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          color: const Color(0xFFf2f2f2),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Image.asset(
-                                  item['image']!,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  item['title']!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                ),
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        'lib/assets/img/background.png',
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                        bottom: 16,
+                        left: 16,
+                        child: Text(
+                          'Kedai Lekku',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 6,
+                                color: Colors.black.withOpacity(0.7),
+                                offset: const Offset(0, 2),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Expanded(
+                  child: GridView.builder(
+                    itemCount: filteredItems.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 3 / 3.5,
+                        ),
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => coffeePages[item['title']]!,
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            color: const Color(0xFFf2f2f2),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Image.asset(
+                                    item['image']!,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    item['title']!,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

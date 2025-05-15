@@ -8,6 +8,8 @@ class CoffeLatteItem extends StatefulWidget {
 }
 
 class _CoffeLatteItemState extends State<CoffeLatteItem> {
+  final List<bool> _isChecked = [false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,22 +76,39 @@ class _CoffeLatteItemState extends State<CoffeLatteItem> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 1 shot espresso (30 ml)'),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 200-250 ml susu segar'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Gula secukupnya (opsional)'),
-                ),
+                const Expanded(child: Text('- 1 shot espresso (30 ml)')),
               ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
+                ),
+                const Expanded(child: Text('- 200-250 ml susu segar')),
+              ],
+            ),
+            const ListTile(
+              leading: Icon(Icons.check),
+              title: Text('- Gula secukupnya (opsional)'),
             ),
             const SizedBox(height: 16.0),
 

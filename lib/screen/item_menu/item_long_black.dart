@@ -8,6 +8,8 @@ class LongBlackItem extends StatefulWidget {
 }
 
 class _LongBlackItemState extends State<LongBlackItem> {
+  final List<bool> _isChecked = [false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,17 +76,36 @@ class _LongBlackItemState extends State<LongBlackItem> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 2 Shot espresso (sekitar 60 ml)'),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Air panas (sekitar 120 ml)'),
+                const Expanded(
+                  child: Text('- 2 Shot espresso (sekitar 60 ml)'),
                 ),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
+                ),
+                const Expanded(child: Text('- Air panas (sekitar 120 ml)')),
               ],
             ),
             const SizedBox(height: 16.0),

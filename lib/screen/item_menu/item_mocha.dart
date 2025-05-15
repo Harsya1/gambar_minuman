@@ -8,6 +8,8 @@ class MochaItem extends StatefulWidget {
 }
 
 class _MochaItemState extends State<MochaItem> {
+  final List<bool> _isChecked = [false, false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,33 +76,49 @@ class _MochaItemState extends State<MochaItem> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text('- 1 shot espresso (sekitar 30 ml)'),
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text(
-                    '- 2 sendok makan sirup cokelat atau saus cokelat',
-                  ),
+                const Expanded(child: Text('- 1 shot espresso')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text('- 150–200 ml susu segar atau susu UHT'),
+                const Expanded(child: Text('- 2 sendok makan cokelat')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[2],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[2] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFD700),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text('- Whipped cream secukupnya untuk topping'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text(
-                    '- Serpihan cokelat atau bubuk kakao sebagai hiasan (opsional)',
-                  ),
-                ),
+                const Expanded(child: Text('- 1/2 cup susu panas')),
               ],
             ),
             const SizedBox(height: 16.0),

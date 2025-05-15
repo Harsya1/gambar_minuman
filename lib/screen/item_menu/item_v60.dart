@@ -8,6 +8,8 @@ class V60Item extends StatefulWidget {
 }
 
 class _V60ItemState extends State<V60Item> {
+  final List<bool> _isChecked = [false, false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,27 +76,49 @@ class _V60ItemState extends State<V60Item> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text(
-                    '- 15–20 gram bubuk kopi kasar (tergantung takaran air)',
-                  ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 250–300 ml air panas (sekitar 93–96°C)'),
+                const Expanded(child: Text('- 15 gram kopi bubuk kasar')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Kertas saring V60'),
+                const Expanded(child: Text('- 250 ml air panas (93-96°C)')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[2],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[2] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFD700),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Teko atau mug untuk menampung hasil seduhan'),
-                ),
+                const Expanded(child: Text('- Kertas saring V60')),
               ],
             ),
             const SizedBox(height: 16.0),

@@ -8,6 +8,8 @@ class CappuchinoItem extends StatefulWidget {
 }
 
 class _CappuchinoItemState extends State<CappuchinoItem> {
+  final List<bool> _isChecked = [false, false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,21 +76,49 @@ class _CappuchinoItemState extends State<CappuchinoItem> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 1 shot espresso (30 ml)'),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[0],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[0] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFF87CEFA),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 100-150 ml susu segar'),
+                const Expanded(child: Text('- 1 shot espresso')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[1],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[1] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFA07A),
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Bubuk cokelat atau kayu manis untuk taburan (opsional)'),
+                const Expanded(child: Text('- 1/3 cup susu panas')),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isChecked[2],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[2] = value!;
+                    });
+                  },
+                  shape: const CircleBorder(),
+                  activeColor: const Color(0xFFFFD700),
                 ),
+                const Expanded(child: Text('- 1/3 cup busa susu')),
               ],
             ),
             const SizedBox(height: 16.0),

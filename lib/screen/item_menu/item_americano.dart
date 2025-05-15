@@ -8,6 +8,9 @@ class AmericanoItem extends StatefulWidget {
 }
 
 class _AmericanoItemState extends State<AmericanoItem> {
+  // Status checkbox untuk setiap bahan
+  final List<bool> _isChecked = [false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +46,7 @@ class _AmericanoItemState extends State<AmericanoItem> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar V60
+            // Gambar Americano
             Image.asset(
               'lib/assets/img/americano.png', // Pastikan Anda memiliki file gambar di folder assets
               width: double.infinity,
@@ -76,14 +79,44 @@ class _AmericanoItemState extends State<AmericanoItem> {
             const SizedBox(height: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- 1-2 shot espresso (30-60 ml)'),
+              children: [
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _isChecked[0],
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked[0] = value!;
+                        });
+                      },
+                      shape:
+                          const CircleBorder(), // Membuat checkbox berbentuk bulat
+                      activeColor: const Color(
+                        0xFF87CEFA,
+                      ), // Warna gradient terang
+                    ),
+                    const Expanded(
+                      child: Text('- 1-2 shot espresso (30-60 ml)'),
+                    ),
+                  ],
                 ),
-                ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('- Air panas secukupnya.'),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _isChecked[1],
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked[1] = value!;
+                        });
+                      },
+                      shape:
+                          const CircleBorder(), // Membuat checkbox berbentuk bulat
+                      activeColor: const Color(
+                        0xFFFFA07A,
+                      ), // Warna gradient terang
+                    ),
+                    const Expanded(child: Text('- Air panas secukupnya.')),
+                  ],
                 ),
               ],
             ),
@@ -104,7 +137,7 @@ class _AmericanoItemState extends State<AmericanoItem> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   title: Text(
-                    'Buat 1 atau 2 shot expresso tergantung pada tingkat kekentalan yang diinginkan',
+                    'Buat 1 atau 2 shot espresso tergantung pada tingkat kekentalan yang diinginkan.',
                   ),
                 ),
                 ListTile(
@@ -113,7 +146,7 @@ class _AmericanoItemState extends State<AmericanoItem> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   title: Text(
-                    'Tambahkan air panas ke dalam expersso hingga mencapai volume yang diinginkan (biasanya sekitar 150-200 ml).',
+                    'Tambahkan air panas ke dalam espresso hingga mencapai volume yang diinginkan (biasanya sekitar 150-200 ml).',
                   ),
                 ),
                 ListTile(
