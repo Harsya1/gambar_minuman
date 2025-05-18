@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Sans-serif',
         scaffoldBackgroundColor: Colors.white,
       ),
-      initialRoute: '/', // Rute awal
+      initialRoute: '/register', // Rute awal
       onGenerateRoute: RouteGenerator.generateRoute, // Gunakan RouteGenerator
     );
   }

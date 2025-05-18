@@ -28,23 +28,26 @@ class _DashboardMinumState extends State<DashboardMinum> {
   ];
 
   final Map<String, Widget> coffeePages = {
-    'Mocha': const MochaItem(),
-    'Americano': const AmericanoItem(),
-    'Cappuchino': const CappuchinoItem(),
-    'Coffe Latte': const CoffeLatteItem(),
-    'Long Black': const LongBlackItem(),
-    'Cafe Au Lait': const CafeAuLaitItem(),
-    'Expresso': const ExpressoItem(),
-    'V60': const V60Item(),
+    'Mocha': MochaItem(),
+    'Americano': AmericanoItem(),
+    'Cappuchino': CappuchinoItem(),
+    'Coffe Latte': CoffeLatteItem(),
+    'Long Black': LongBlackItem(),
+    'Cafe Au Lait': CafeAuLaitItem(),
+    'Expresso': ExpressoItem(),
+    'V60': V60Item(),
   };
 
   final TextEditingController searchController = TextEditingController();
   List<Map<String, String>> filteredItems = [];
+  int _currentPage = 0;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    filterItems(''); // Awalnya tampilkan semua item
+    _pageController = PageController(initialPage: 0);
+    filterItems('');
   }
 
   void filterItems(String query) {
@@ -52,16 +55,25 @@ class _DashboardMinumState extends State<DashboardMinum> {
       if (query.isEmpty) {
         filteredItems = coffeeItems;
       } else {
-        filteredItems =
-            coffeeItems
-                .where(
-                  (item) => item['title']!.toLowerCase().contains(
+        filteredItems = coffeeItems
+            .where(
+              (item) => item['title']!.toLowerCase().contains(
                     query.toLowerCase(),
                   ),
-                )
-                .toList();
+            )
+            .toList();
+      }
+      _currentPage = 0;
+      if (_pageController.hasClients) {
+        _pageController.jumpToPage(0);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,9 +124,9 @@ class _DashboardMinumState extends State<DashboardMinum> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFFFE4B5), // Warna cerah 1 (Moccasin)
-              Color(0xFFFFA07A), // Warna cerah 2 (Light Salmon)
-              Color(0xFF87CEFA), // Warna cerah 3 (Light Sky Blue)
+              Color(0xFFFFE4B5),
+              Color(0xFFFFA07A),
+              Color(0xFF87CEFA),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -123,71 +135,135 @@ class _DashboardMinumState extends State<DashboardMinum> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // TextField untuk pencarian
-                TextField(
-                  controller: searchController,
-                  onChanged: filterItems,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Cari Resep minuman...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                        color: Colors.black,
-                        width: 1,
-                      ),
-                    ),
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Stack(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
-                      Image.asset(
-                        'lib/assets/img/background.png',
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                      // TextField untuk pencarian
+                      TextField(
+                        controller: searchController,
+                        onChanged: filterItems,
+                        keyboardType: TextInputType.emailAddress,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          hintText: 'Cari Resep minuman...',
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                          filled: true,
+                        ),
                       ),
-                      Positioned(
-                        bottom: 16,
-                        left: 16,
-                        child: Text(
-                          'Kedai Lekku',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 20,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 6,
-                                color: Colors.black.withOpacity(0.7),
-                                offset: const Offset(0, 2),
+                      const SizedBox(height: 16),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              'lib/assets/img/background.png',
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                            Positioned(
+                              bottom: 16,
+                              left: 16,
+                              child: Text(
+                                'Kedai Lekku',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 6,
+                                      color: Colors.black.withOpacity(0.7),
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // PageView untuk menampilkan gambar dan nama minuman
+                      SizedBox(
+                        height: 180,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: coffeeItems.length,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentPage = index;
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            final item = coffeeItems[index];
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+                                    child: Image.asset(
+                                      item['image']!,
+                                      width: 100,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Text(
+                                      item['title']!,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      // Indikator PageView
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          coffeeItems.length,
+                          (index) => Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                            width: _currentPage == index ? 16 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _currentPage == index
+                                  ? Colors.blueAccent
+                                  : Colors.grey,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: GridView.builder(
-                    itemCount: filteredItems.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 3 / 3.5,
-                        ),
-                    itemBuilder: (context, index) {
+                // GridView dalam satu scroll
+                SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       final item = filteredItems[index];
                       return GestureDetector(
                         onTap: () {
@@ -228,6 +304,13 @@ class _DashboardMinumState extends State<DashboardMinum> {
                         ),
                       );
                     },
+                    childCount: filteredItems.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 3 / 3.5,
                   ),
                 ),
               ],

@@ -10,13 +10,51 @@ class AmericanoItem extends StatefulWidget {
 class _AmericanoItemState extends State<AmericanoItem> {
   // Status checkbox untuk setiap bahan
   final List<bool> _isChecked = [false, false];
+  final List<String> _catatanList = [];
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _catatanController = TextEditingController();
+
+  // Variabel untuk dropdown ukuran gelas
+  String _selectedSize = 'Small'; // Default
+  final Map<String, String> _espressoAmount = {
+    'Small': '1 shot espresso (30 ml)',
+    'Medium': '1.5 shot espresso (45 ml)',
+    'Large': '2 shot espresso (60 ml)',
+  };
+  final Map<String, String> _waterAmount = {
+    'Small': 'Air panas 120 ml',
+    'Medium': 'Air panas 150 ml',
+    'Large': 'Air panas 200 ml',
+  };
+
+  // Fungsi untuk mengirim/simpan catatan
+ void kirimCatatan() {
+  if (_formKey.currentState!.validate()) {
+    setState(() {
+      _catatanList.add(_catatanController.text);
+    });
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Catatan Tersimpan'),
+        content: Text('Catatan kamu: ${_catatanController.text}'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Americano Recipe'),
-        automaticallyImplyLeading: false, // Hilangkan tombol back default
+        automaticallyImplyLeading: false, 
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -48,7 +86,7 @@ class _AmericanoItemState extends State<AmericanoItem> {
           children: [
             // Gambar Americano
             Image.asset(
-              'lib/assets/img/americano.png', // Pastikan Anda memiliki file gambar di folder assets
+              'lib/assets/img/americano.png', 
               width: double.infinity,
               height: 250,
               fit: BoxFit.cover,
@@ -71,6 +109,39 @@ class _AmericanoItemState extends State<AmericanoItem> {
             ),
             const SizedBox(height: 16.0),
 
+            // Dropdown ukuran gelas
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: DropdownButtonFormField<String>(
+                value: _selectedSize,
+                decoration: InputDecoration(
+                  labelText: 'Pilih Ukuran Gelas',
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blue[50],
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
+                dropdownColor: Colors.white,
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+                items: ['Small', 'Medium', 'Large']
+                    .map((size) => DropdownMenuItem(
+                          value: size,
+                          child: Text(size),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedSize = value!;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 16.0),
+
             // Daftar Bahan
             const Text(
               'Bahan-bahan:',
@@ -89,14 +160,11 @@ class _AmericanoItemState extends State<AmericanoItem> {
                           _isChecked[0] = value!;
                         });
                       },
-                      shape:
-                          const CircleBorder(), // Membuat checkbox berbentuk bulat
-                      activeColor: const Color(
-                        0xFF87CEFA,
-                      ), // Warna gradient terang
+                      shape: const CircleBorder(),
+                      activeColor: const Color(0xFF87CEFA),
                     ),
-                    const Expanded(
-                      child: Text('- 1-2 shot espresso (30-60 ml)'),
+                    Expanded(
+                      child: Text('- ${_espressoAmount[_selectedSize]}'),
                     ),
                   ],
                 ),
@@ -109,13 +177,12 @@ class _AmericanoItemState extends State<AmericanoItem> {
                           _isChecked[1] = value!;
                         });
                       },
-                      shape:
-                          const CircleBorder(), // Membuat checkbox berbentuk bulat
-                      activeColor: const Color(
-                        0xFFFFA07A,
-                      ), // Warna gradient terang
+                      shape: const CircleBorder(),
+                      activeColor: const Color(0xFFFFA07A),
                     ),
-                    const Expanded(child: Text('- Air panas secukupnya.')),
+                    Expanded(
+                      child: Text('- ${_waterAmount[_selectedSize]}'),
+                    ),
                   ],
                 ),
               ],
@@ -157,6 +224,57 @@ class _AmericanoItemState extends State<AmericanoItem> {
                   title: Text('Aduk rata dan siap disajikan.'),
                 ),
               ],
+            ),
+            const SizedBox(height: 16.0),
+
+            // form catatan pribadi
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Catatan Pribadi:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _catatanController,
+                    decoration: const InputDecoration(
+                      hintText: 'Tulis catatan atau tips kamu di sini...',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 2,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Catatan tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Catatan Tersimpan'),
+                            content: Text('Catatan kamu: ${_catatanController.text}'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Simpan Catatan'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

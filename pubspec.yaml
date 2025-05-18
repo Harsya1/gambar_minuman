@@ -66,6 +66,7 @@ flutter:
   - lib/assets/img/long_black.png
   - lib/assets/img/mocha.png
   - lib/assets/img/v60.png
+  - lib/assets/img/coffee_cup.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
