@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'item_menu/item_mocha.dart';
 import 'item_menu/item_americano.dart';
@@ -42,12 +43,24 @@ class _DashboardMinumState extends State<DashboardMinum> {
   List<Map<String, String>> filteredItems = [];
   int _currentPage = 0;
   late PageController _pageController;
+  Timer? _sliderTimer;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
     filterItems('');
+    _sliderTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_pageController.hasClients) {
+        int nextPage = _currentPage + 1;
+        if (nextPage >= coffeeItems.length) nextPage = 0;
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   void filterItems(String query) {
@@ -55,13 +68,14 @@ class _DashboardMinumState extends State<DashboardMinum> {
       if (query.isEmpty) {
         filteredItems = coffeeItems;
       } else {
-        filteredItems = coffeeItems
-            .where(
-              (item) => item['title']!.toLowerCase().contains(
+        filteredItems =
+            coffeeItems
+                .where(
+                  (item) => item['title']!.toLowerCase().contains(
                     query.toLowerCase(),
                   ),
-            )
-            .toList();
+                )
+                .toList();
       }
       _currentPage = 0;
       if (_pageController.hasClients) {
@@ -72,6 +86,7 @@ class _DashboardMinumState extends State<DashboardMinum> {
 
   @override
   void dispose() {
+    _sliderTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -123,11 +138,7 @@ class _DashboardMinumState extends State<DashboardMinum> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFFFE4B5),
-              Color(0xFFFFA07A),
-              Color(0xFF87CEFA),
-            ],
+            colors: [Color(0xFFFFE4B5), Color(0xFFFFA07A), Color(0xFF87CEFA)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -214,7 +225,9 @@ class _DashboardMinumState extends State<DashboardMinum> {
                               child: Row(
                                 children: [
                                   ClipRRect(
-                                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      left: Radius.circular(16),
+                                    ),
                                     child: Image.asset(
                                       item['image']!,
                                       width: 100,
@@ -244,13 +257,17 @@ class _DashboardMinumState extends State<DashboardMinum> {
                         children: List.generate(
                           coffeeItems.length,
                           (index) => Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 8,
+                            ),
                             width: _currentPage == index ? 16 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? Colors.blueAccent
-                                  : Colors.grey,
+                              color:
+                                  _currentPage == index
+                                      ? Colors.blueAccent
+                                      : Colors.grey,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -262,50 +279,47 @@ class _DashboardMinumState extends State<DashboardMinum> {
                 ),
                 // GridView dalam satu scroll
                 SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final item = filteredItems[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => coffeePages[item['title']]!,
-                            ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            color: const Color(0xFFf2f2f2),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Image.asset(
-                                    item['image']!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = filteredItems[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => coffeePages[item['title']]!,
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          color: const Color(0xFFf2f2f2),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Image.asset(
+                                  item['image']!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Text(
+                                  item['title']!,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Text(
-                                    item['title']!,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                    childCount: filteredItems.length,
-                  ),
+                      ),
+                    );
+                  }, childCount: filteredItems.length),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
