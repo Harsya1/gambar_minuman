@@ -12,7 +12,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,29 +68,49 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     _buildInputField('Name', _nameController),
                     const SizedBox(height: 16),
-                    _buildInputField('Email', _emailController, keyboardType: TextInputType.emailAddress),
+                    _buildInputField(
+                      'Email',
+                      _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
                     const SizedBox(height: 16),
-                    _buildInputField('Password', _passwordController, isPassword: true),
+                    _buildInputField(
+                      'Password',
+                      _passwordController,
+                      isPassword: true,
+                    ),
                     const SizedBox(height: 16),
-                    _buildInputField('Confirm Password', _confirmPasswordController, isPassword: true),
+                    _buildInputField(
+                      'Confirm Password',
+                      _confirmPasswordController,
+                      isPassword: true,
+                    ),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFB39C8E),
-                        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 60,
+                          vertical: 16,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (_passwordController.text != _confirmPasswordController.text) {
+                          if (_passwordController.text !=
+                              _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Password tidak sama')),
+                              const SnackBar(
+                                content: Text('Password tidak sama'),
+                              ),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Registrasi berhasil!')),
+                              const SnackBar(
+                                content: Text('Registrasi berhasil!'),
+                              ),
                             );
                             // Arahkan ke dashboard dan hapus halaman register dari stack
                             Navigator.pushReplacementNamed(context, '/');
@@ -100,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -108,7 +132,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildInputField(String label, TextEditingController controller, {bool isPassword = false, TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildInputField(
+    String label,
+    TextEditingController controller, {
+    bool isPassword = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    bool isConfirm = label.toLowerCase().contains('confirm');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -122,17 +152,43 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
-          obscureText: isPassword,
+          obscureText:
+              isPassword
+                  ? (isConfirm ? !_showConfirmPassword : !_showPassword)
+                  : false,
           keyboardType: keyboardType,
           autofillHints: null,
           decoration: InputDecoration(
             fillColor: const Color(0xFFB39C8E),
             filled: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: BorderSide.none,
             ),
+            suffixIcon:
+                isPassword
+                    ? IconButton(
+                      icon: Icon(
+                        (isConfirm ? _showConfirmPassword : _showPassword)
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: const Color(0xFF4A3F0D),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (isConfirm) {
+                            _showConfirmPassword = !_showConfirmPassword;
+                          } else {
+                            _showPassword = !_showPassword;
+                          }
+                        });
+                      },
+                    )
+                    : null,
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
